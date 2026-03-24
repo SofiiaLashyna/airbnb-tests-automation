@@ -21,6 +21,8 @@ class AirbnbHomePage:
         self.add_adult_btn = (By.CSS_SELECTOR, "button[data-testid='stepper-adults-increase-button']")
         self.search_submit_btn = (By.CSS_SELECTOR, "button[data-testid='structured-search-input-search-button']")
 
+        self.experiences_tab = (By.ID, "search-block-tab-EXPERIENCES")
+
     def load(self):
         self.driver.get(self.url)
 
@@ -53,7 +55,7 @@ class AirbnbHomePage:
 
     def open_calendar(self):
         try:
-            date_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Додайте дати')]")))
+            date_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Add date')]")))
             date_btn.click()
             print("[Info] Calendar is opened.")
         except TimeoutException:
@@ -94,3 +96,12 @@ class AirbnbHomePage:
 
         self.driver.execute_script("arguments[0].click();", search_btn)
         print("[Info] Clicked button 'Search'.")
+
+    def switch_to_experiences(self):
+        try:
+            exp_tab = self.wait.until(EC.presence_of_element_located(self.experiences_tab))
+
+            self.driver.execute_script("arguments[0].click();", exp_tab)
+            print("\n[Info] Switched to experiences.")
+        except TimeoutException:
+            print("\n[Error] Page 'experiences' not found.")
