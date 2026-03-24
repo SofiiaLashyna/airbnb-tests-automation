@@ -1,0 +1,13 @@
+.venv/
+venv/
+ENV/
+
+.idea/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+.pytest_cache/
+reports/
+*.html
