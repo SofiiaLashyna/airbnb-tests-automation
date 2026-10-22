@@ -3,6 +3,7 @@ venv/
 ENV/
 
 .idea/
+.vscode/
 
 __pycache__/
 *.py[cod]
@@ -11,3 +12,10 @@ __pycache__/
 .pytest_cache/
 reports/
 *.html
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+Thumbs.db

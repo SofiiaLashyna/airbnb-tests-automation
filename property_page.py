@@ -8,20 +8,20 @@ class AirbnbPropertyPage:
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
+        self.short_wait = WebDriverWait(driver, 5)
 
         self.booking_widget = (By.CSS_SELECTOR, "[data-section-id='BOOK_IT_SIDEBAR']")
         self.check_in_btn = (By.CSS_SELECTOR, "div[data-testid='book-it-default-checkin']")
         self.reserve_btn = (By.CSS_SELECTOR, "button[data-testid='homes-pdp-cta-btn']")
-
         self.disclaimer_text = (By.XPATH,
                                 "//*[contains(text(), 'Плата поки що не стягуватиметься') or contains(text(), 'You won’t be charged yet')]")
 
+        self.close_popup_btn = (By.XPATH, "//button[@aria-label='Закрити' or @aria-label='Close']")
+        self.date_btn_template = "div[data-testid='calendar-day-{}']"
+
     def close_translation_popup(self):
         try:
-            close_btn_xpath = "//button[@aria-label='Закрити' or @aria-label='Close']"
-
-            short_wait = WebDriverWait(self.driver, 5)
-            close_btn = short_wait.until(EC.element_to_be_clickable((By.XPATH, close_btn_xpath)))
+            close_btn = self.short_wait.until(EC.element_to_be_clickable(self.close_popup_btn))
             close_btn.click()
             print("\n[Info] Translation popup closed.")
         except TimeoutException:
@@ -49,15 +49,16 @@ class AirbnbPropertyPage:
 
     def select_date(self, date_str: str):
         month, day, year = date_str.split('/')
-
         target_date = f"{day}.{month}.{year}"
 
-        css_selector = f"div[data-testid='calendar-day-{target_date}']"
-        date_element = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
+        css_selector = self.date_btn_template.format(target_date)
+        date_locator = (By.CSS_SELECTOR, css_selector)
+
+        date_element = self.wait.until(EC.presence_of_element_located(date_locator))
 
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", date_element)
         self.driver.execute_script("arguments[0].click();", date_element)
-        print(f"Date chosen: {target_date}")
+        print(f"[Info] Date chosen: {target_date}")
 
     def is_disclaimer_visible(self):
         try:
